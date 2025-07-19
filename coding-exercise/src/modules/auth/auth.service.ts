@@ -32,6 +32,11 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  logout() {
+    // logout is need to be handle on the client by deleting the token
+    return { message: 'Successfully logged out ' };
+  }
+
   private generateToken(user: any) {
     const payload = { sub: user.id, role: user.role };
     return {
