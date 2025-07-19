@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Document } from './document.entity';
 
 @Injectable()
@@ -15,8 +15,28 @@ export class DocumentService {
     return this.documentRepo.save(doc);
   }
 
-  async findAll(): Promise<Document[]> {
-    return this.documentRepo.find();
+  async findAll(
+    page = 1,
+    limit = 10,
+    search?: string,
+    uploaderId?: number,
+  ): Promise<{ data: Document[]; total: number }> {
+    const where: any = {};
+    if (search) where.filename = Like(`%${search}%`);
+    if (uploaderId) where.uploader = { id: uploaderId };
+
+    const [data, total] = await this.documentRepo.findAndCount({
+      where,
+      relations: ['uploader'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+    return { data, total };
+  }
+
+  async findOne(id: number): Promise<Document | null> {
+    return this.documentRepo.findOne({ where: { id }, relations: ['uploader'] });
   }
 
   async delete(id: number) {
@@ -24,7 +44,7 @@ export class DocumentService {
   }
 
   async updateFilename(id: number, filename: string): Promise<Document | null> {
-    const doc = await this.documentRepo.findOne({ where: { id } });
+    const doc = await this.findOne(id);
     if (!doc) return null;
     doc.filename = filename;
     return this.documentRepo.save(doc);
