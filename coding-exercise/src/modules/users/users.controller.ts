@@ -34,7 +34,7 @@ export class UserController {
             email: 'admin@example.com',
             first_name: 'John',
             last_name: 'Doe',
-            phone: 1234567890,
+            phone: "1234567890",
             created_at: '2024-01-01T00:00:00.000Z',
             updated_at: '2024-01-02T00:00:00.000Z',
           },

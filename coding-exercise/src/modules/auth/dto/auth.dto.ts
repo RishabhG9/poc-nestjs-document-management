@@ -12,8 +12,8 @@ export class RegisterDto {
   lastName!: string
 
   @ApiProperty({ example: '0123456789' })
-  @IsNumber()
-  phone!: number
+  @IsString()
+  phone!: string
 
   @ApiProperty({ example: 'john@example.com' })
   @IsEmail()

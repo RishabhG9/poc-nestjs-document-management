@@ -19,7 +19,7 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login user and get JWT token' })
-  @ApiResponse({ status: 200, description: 'Login successful' })
+  @ApiResponse({ status: 201, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);

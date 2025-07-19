@@ -8,7 +8,7 @@ export class UserResponseDto {
   @ApiProperty() email!: string;
   @ApiProperty() first_name!: string;
   @ApiProperty() last_name!: string;
-  @ApiProperty() phone!: number;
+  @ApiProperty() phone!: string;
   @ApiProperty() created_at!: Date;
   @ApiProperty() updated_at!: Date;
 }

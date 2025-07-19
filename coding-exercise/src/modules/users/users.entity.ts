@@ -35,8 +35,8 @@ export class User {
   @Column({ name: 'last_name' })
   lastName!: string;
 
-  @Column({ type: 'bigint' })
-  phone!: number;
+  @Column()
+  phone!: string;
 
   @Column({ unique: true })
   email!: string;
