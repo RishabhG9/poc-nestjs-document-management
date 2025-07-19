@@ -8,5 +8,6 @@ import { DocumentController } from './document.controller';
   imports: [TypeOrmModule.forFeature([Document])],
   controllers: [DocumentController],
   providers: [DocumentService],
+  exports: [DocumentService],
 })
 export class DocumentModule { }

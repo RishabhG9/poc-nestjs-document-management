@@ -6,10 +6,11 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 
 import { UserRole } from './users.entity';
 import { UserService } from './users.service';
-import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response-dto';
 
 @ApiTags("Users")
+@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('users')
 export class UserController {
