@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 
 import { User, UserRole } from './users.entity';
 
@@ -21,8 +21,28 @@ export class UserService {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll(
+    page = 1,
+    limit = 10,
+    search?: string,
+  ): Promise<{ data: User[]; total: number }> {
+    let where: any = {};
+
+    if (search) {
+      const likeSearch = ILike(`%${search}%`);
+      where = [
+        { firstName: likeSearch },
+        { lastName: likeSearch },
+        { email: likeSearch },
+      ];
+    }
+    const [data, total] = await this.userRepository.findAndCount({
+      where: where.length ? where : undefined,
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+    return { data, total };
   }
 
   async findById(id: number): Promise<User | null> {

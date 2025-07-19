@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { Document } from './document.entity';
 
 @Injectable()
@@ -22,8 +22,14 @@ export class DocumentService {
     uploaderId?: number,
   ): Promise<{ data: Document[]; total: number }> {
     const where: any = {};
-    if (search) where.filename = Like(`%${search}%`);
-    if (uploaderId) where.uploader = { id: uploaderId };
+
+    if (search) {
+      where.filename = ILike(`%${search}%`);
+    }
+
+    if (uploaderId) {
+      where.uploader = { id: uploaderId };
+    }
 
     const [data, total] = await this.documentRepo.findAndCount({
       where,

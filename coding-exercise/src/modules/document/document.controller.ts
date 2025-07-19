@@ -20,14 +20,16 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiQu
 
 import { User, UserRole } from '../users/users.entity';
 import { DocumentService } from './document.service';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 import { Express } from 'express';
 import * as toStream from 'buffer-to-stream';
 import { v2 as cloudinaryV2 } from 'cloudinary';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiTags('Documents')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('documents')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) { }
@@ -48,13 +50,8 @@ export class DocumentController {
     },
   })
   @ApiResponse({ status: 201, description: 'File uploaded and saved to DB' })
-  @ApiResponse({ status: 403, description: 'Viewer role is not allowed to upload' })
   async uploadDocument(@UploadedFile() file: Express.Multer.File, @Req() req) {
     const user = req.user as User;
-
-    if (user.role === UserRole.VIEWER) {
-      throw new HttpException('Viewer role is not allowed to upload', HttpStatus.FORBIDDEN);
-    }
 
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinaryV2.uploader.upload_stream(
@@ -76,6 +73,7 @@ export class DocumentController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({ summary: 'List all documents with pagination' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -87,55 +85,58 @@ export class DocumentController {
         data: [
           {
             id: 1,
-            filename: 'file1.pdf',
+            uuid: 'doc-1234-uuid',
+            filename: 'report.pdf',
             mimetype: 'application/pdf',
-            url: 'https://res.cloudinary.com/demo/...',
+            url: 'https://res.cloudinary.com/your-cloud-name/.../report.pdf',
+            archived: null,
+            created_at: '2025-07-19T12:34:56.789Z',
+            updated_at: '2025-07-19T12:34:56.789Z',
             uploader: {
               id: 1,
-              email: 'user@example.com',
-              role: 'admin',
-            },
-            createdAt: '2025-07-19T12:34:56.789Z',
-          },
+              uuid: 'user-uuid-5678',
+              email: 'editor@example.com',
+              first_name: 'Jane',
+              last_name: 'Doe',
+              role: 'editor',
+              phone: 9876543210,
+              created_at: '2025-06-01T08:00:00.000Z',
+              updated_at: '2025-07-01T09:30:00.000Z',
+            }
+          }
         ],
-        total: 1,
-      },
-    },
+        total: 1
+      }
+    }
   })
   async listAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query('search') search?: string) {
     return this.documentService.findAll(page, limit, search);
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete a document by ID' })
   @ApiResponse({ status: 200, description: 'Deleted successfully' })
   @ApiResponse({ status: 403, description: 'Only uploader or admin can delete' })
-  async delete(@Param('id') id: number, @Req() req) {
-    const user = req.user as User;
+  async delete(@Param('id') id: number) {
+
     const document = await this.documentService.findOne(id);
     if (!document) throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
-
-    if (user.role !== 'admin' && document.uploader.id !== user.id) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    }
 
     await this.documentService.delete(id);
     return { message: 'Deleted successfully' };
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.VIEWER)
   @ApiOperation({ summary: 'Update document filename' })
   @ApiResponse({ status: 200, description: 'Updated successfully' })
   @ApiResponse({ status: 403, description: 'Only uploader or admin can update' })
-  async updateName(@Param('id') id: number, @Body('filename') filename: string, @Req() req) {
-    const user = req.user as User;
+  async updateName(@Param('id') id: number, @Body('filename') filename: string) {
+
     const document = await this.documentService.findOne(id);
 
     if (!document) throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
-
-    if (user.role !== 'admin' && document.uploader.id !== user.id) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    }
 
     return this.documentService.updateFilename(id, filename);
   }
