@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+import { AppModule } from './app.module';
 
 
 async function bootstrap() {
@@ -12,6 +14,17 @@ async function bootstrap() {
    * Any extra field will be ignore from the request body automatically.
    */
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
+  const config = new DocumentBuilder()
+    .setTitle('Document Management API')
+    .setDescription('POC - NestJS Document Management APIs')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
