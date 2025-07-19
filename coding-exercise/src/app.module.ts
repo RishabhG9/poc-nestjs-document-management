@@ -6,8 +6,10 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { DocumentModule } from './modules/document/document.module';
 import { UserModule } from './modules/users/users.module';
 
+import { Document } from './modules/document/document.entity';
 import { User } from './modules/users/users.entity';
 
 @Module({
@@ -22,10 +24,11 @@ import { User } from './modules/users/users.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
-      synchronize: false, // set to false in prod
+      entities: [Document, User],
+      synchronize: true, // set to false in prod
     }),
     AuthModule,
+    DocumentModule,
     UserModule,
   ],
   controllers: [AppController],
