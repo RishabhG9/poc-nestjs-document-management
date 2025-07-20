@@ -28,12 +28,12 @@ export class DocumentService {
     }
 
     if (uploaderId) {
-      where.uploader = { id: uploaderId };
+      where.uploadedBy = { id: uploaderId };
     }
 
     const [data, total] = await this.documentRepo.findAndCount({
       where,
-      relations: ['uploader'],
+      relations: ['uploadedBy'],
       skip: (page - 1) * limit,
       take: limit,
       order: { createdAt: 'DESC' },
@@ -42,7 +42,7 @@ export class DocumentService {
   }
 
   async findOne(id: number): Promise<Document | null> {
-    return this.documentRepo.findOne({ where: { id }, relations: ['uploader'] });
+    return this.documentRepo.findOne({ where: { id }, relations: ['uploadedBy'] });
   }
 
   async delete(id: number) {

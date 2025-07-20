@@ -26,7 +26,7 @@ export class AuthService {
       ...registerDto,
       password: hashedPassword,
     });
-    return this.generateToken(user);
+    return { message: 'User successfully registered' };
   }
 
   async login(loginDto: LoginDto) {
@@ -43,7 +43,15 @@ export class AuthService {
   }
 
   private generateToken(user: any) {
-    const payload = { sub: user.id, role: user.role };
+    const payload = {
+      sub: user.id,
+      uuid: user.uuid,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

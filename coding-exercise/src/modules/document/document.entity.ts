@@ -36,5 +36,5 @@ export class Document {
   @ApiProperty({ type: () => User })
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'uploadedBy' })
-  uploader!: User;
+  uploadedBy!: User;
 }

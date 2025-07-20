@@ -27,7 +27,7 @@ import { User } from './modules/users/users.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [Document, User, Ingestion],
-      synchronize: false,
+      synchronize: true,
     }),
     AuthModule,
     DocumentModule,
