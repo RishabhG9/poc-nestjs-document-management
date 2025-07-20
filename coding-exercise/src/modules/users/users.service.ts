@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { ILike, Repository } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 
 import { User } from './users.entity';
 import { UpdateUserDto } from './dto/user-response-dto';
@@ -27,7 +27,7 @@ export class UserService {
     limit = 10,
     search?: string,
   ): Promise<{ data: User[]; total: number }> {
-    let where: any = {};
+    let where: any = { archived: IsNull() };
 
     if (search) {
       const likeSearch = ILike(`%${search}%`);

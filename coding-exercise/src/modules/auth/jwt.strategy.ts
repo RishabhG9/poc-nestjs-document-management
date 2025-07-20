@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 interface JwtPayload {
   sub: number;
   uuid: string;

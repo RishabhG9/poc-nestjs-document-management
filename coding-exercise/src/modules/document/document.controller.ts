@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 import { User, UserRole } from '../users/users.entity';
 import { DocumentService } from './document.service';
@@ -27,6 +27,7 @@ import { Express } from 'express';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import cloudinary from 'src/config/cloudinary.config';
+import { UpdateFilenameDto } from './dto/update-fileName.dto';
 
 const bufferToStream = (buffer: Buffer) => {
   const readable = new Readable();
@@ -108,7 +109,7 @@ export class DocumentController {
   }
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.EDITOR)
+  // @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({ summary: 'List all documents with pagination' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -144,34 +145,113 @@ export class DocumentController {
       }
     }
   })
-  async listAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query('search') search?: string) {
-    return this.documentService.findAll(page, limit, search);
+  @ApiUnauthorizedResponse({
+    description: 'Not authorized for to upload',
+    schema: {
+      example: {
+        message: "Unauthorized",
+        statusCode: 401
+      }
+    }
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
+  async listAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query('search') search?: string, @Req() req?: any) {
+    const user = req.user
+
+    if (user.role === 'admin') {
+      return this.documentService.findAll(page, limit, search);
+    } else {
+      const uploadedBy = Number(user?.sub)
+      return this.documentService.findAll(page, limit, search, uploadedBy);
+    }
   }
 
   @Delete(':id')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete a document by ID' })
   @ApiResponse({ status: 200, description: 'Deleted successfully' })
-  @ApiResponse({ status: 403, description: 'Only uploader or admin can delete' })
+  @ApiUnauthorizedResponse({
+    description: 'Not authorized for to upload',
+    schema: {
+      example: {
+        message: "Unauthorized",
+        statusCode: 401
+      }
+    }
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
   async delete(@Param('id') id: number) {
 
     const document = await this.documentService.findOne(id);
     if (!document) throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
 
-    await this.documentService.delete(id);
+    await this.documentService.delete(id, document);
     return { message: 'Deleted successfully' };
   }
 
   @Patch(':id')
   @Roles(UserRole.ADMIN, UserRole.VIEWER)
   @ApiOperation({ summary: 'Update document filename' })
-  @ApiResponse({ status: 200, description: 'Updated successfully' })
-  @ApiResponse({ status: 403, description: 'Only uploader or admin can update' })
-  async updateName(@Param('id') id: number, @Body('filename') filename: string) {
+  @ApiOkResponse({
+    description: 'Updated successfully',
+    schema: {
+      example: {
+        id: 4,
+        uuid: "6866f3b3-cc14-48e7-99c1-37bfdf514f7c",
+        createdAt: "2025-07-20T02:05:14.217Z",
+        updatedAt: "2025-07-20T07:40:12.144Z",
+        archived: null,
+        filename: "R_Frontend_Resume.pdf",
+        mimetype: "application/pdf",
+        url: "https://res.cloudinary.com/dfptmfjys/image/upload/v1752996913/cnfehi7ekfo5n14pn6hz.pdf",
+        uploadedBy: {}
+      }
+    }
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not authorized for to upload',
+    schema: {
+      example: {
+        message: "Unauthorized",
+        statusCode: 401
+      }
+    }
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
+  async updateFileName(@Param('id') id: number, @Body() updatedBody: UpdateFilenameDto) {
 
     const document = await this.documentService.findOne(id);
 
     if (!document) throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
+
+    const { filename } = updatedBody;
 
     return this.documentService.updateFilename(id, filename);
   }
