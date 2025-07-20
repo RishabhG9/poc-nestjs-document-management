@@ -12,3 +12,11 @@ export class UserResponseDto {
   @ApiProperty() created_at!: Date;
   @ApiProperty() updated_at!: Date;
 }
+
+export class UpdateUserDto {
+  @ApiProperty() role?: UserRole;
+  @ApiProperty() email?: string;
+  @ApiProperty() first_name?: string;
+  @ApiProperty() last_name?: string;
+  @ApiProperty() phone?: string;
+}

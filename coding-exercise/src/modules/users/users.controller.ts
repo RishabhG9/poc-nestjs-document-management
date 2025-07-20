@@ -6,8 +6,8 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 
 import { UserRole } from './users.entity';
 import { UserService } from './users.service';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { UserResponseDto } from './dto/user-response-dto';
+import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { UpdateUserDto, UserResponseDto } from './dto/user-response-dto';
 
 @ApiTags("Users")
 @ApiBearerAuth()
@@ -43,6 +43,16 @@ export class UserController {
       },
     },
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
   findAll(@Query('page') page = 1, @Query('limit') limit = 10, @Query('search') search?: string) {
     return this.userService.findAll(page, limit, search);
   }
@@ -55,19 +65,40 @@ export class UserController {
     description: 'Single user data',
     type: UserResponseDto,
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
   findOne(@Param('id') id: number) {
     return this.userService.findById(id);
   }
 
-  @Patch(':id/role')
+  @Patch(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update user by id' })
   @ApiParam({ name: 'id', required: true })
   @ApiOkResponse({
     description: 'Updated user data',
     type: UserResponseDto,
   })
-  @Roles(UserRole.ADMIN)
-  updateRole(@Param('id') id: number, @Body('role') role: UserRole) {
-    return this.userService.updateRole(id, role);
+  @ApiForbiddenResponse({
+    description: 'Forbidden request',
+    schema: {
+      example: {
+        message: "Forbidden resource",
+        error: "Forbidden",
+        statusCode: 403
+      }
+    },
+  })
+  @ApiBody({ type: UpdateUserDto })
+  updateUserDetail(@Param('id') id: number, @Body() updateDto: UpdateUserDto) {
+    return this.userService.updateUserDetail(id, updateDto);
   }
 }
