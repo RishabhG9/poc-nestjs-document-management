@@ -1,6 +1,6 @@
 import { User, UserRole } from '../../../src/modules/users/users.entity';
 
-export const createMockUser = (overrides: Partial<User> = {}): User => ({
+export const createMockUser = (overrides: Partial<User> = {}) => ({
   id: 1,
   uuid: 'test-uuid',
   email: 'test@example.com',
@@ -12,6 +12,7 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
   archived: null,
+  reload: jest.fn(),
   ...overrides,
 });
 

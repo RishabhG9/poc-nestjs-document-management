@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { IsNull } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 
 import { IngestionService } from '../../../src/modules/ingestion/ingestion.service';
@@ -19,7 +19,7 @@ describe('IngestionService', () => {
   const mockIngestion = createMockIngestion({ document: mockDocument, triggeredBy: mockUser });
 
   beforeEach(async () => {
-    const mockRepository = createMockRepository<Ingestion>();
+    const mockRepository = createMockRepository();;
     const mockDocumentService = {
       findOne: jest.fn(),
     };

@@ -2,7 +2,7 @@ import { Ingestion, IngestionStatus } from '../../../src/modules/ingestion/inges
 import { createMockDocument } from './document.mock';
 import { createMockUser } from './user.mock';
 
-export const createMockIngestion = (overrides: Partial<Ingestion> = {}): Ingestion => ({
+export const createMockIngestion = (overrides: Partial<Ingestion> = {}) => ({
   id: 1,
   uuid: 'ingestion-uuid',
   status: IngestionStatus.PENDING,
@@ -14,6 +14,7 @@ export const createMockIngestion = (overrides: Partial<Ingestion> = {}): Ingesti
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
   archived: null,
+  reload: jest.fn(),
   ...overrides,
 });
 

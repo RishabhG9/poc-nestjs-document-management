@@ -72,7 +72,7 @@ describe('UserController', () => {
   describe('updateUserDetail', () => {
     it('should update user details', async () => {
       const updateDto: UpdateUserDto = {
-        firstName: 'Jane',
+        first_name: 'Jane',
         role: UserRole.EDITOR,
       };
 

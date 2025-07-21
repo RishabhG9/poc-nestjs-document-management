@@ -1,7 +1,7 @@
 import { Document } from '../../../src/modules/document/document.entity';
 import { createMockUser } from './user.mock';
 
-export const createMockDocument = (overrides: Partial<Document> = {}): Document => ({
+export const createMockDocument = (overrides: Partial<Document> = {}) => ({
   id: 1,
   uuid: 'doc-uuid',
   filename: 'test.pdf',
@@ -11,6 +11,7 @@ export const createMockDocument = (overrides: Partial<Document> = {}): Document 
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
   archived: null,
+  reload: jest.fn(),
   ...overrides,
 });
 

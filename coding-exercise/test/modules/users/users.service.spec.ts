@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike, IsNull } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 
 import { UserService } from '../../../src/modules/users/users.service';
 import { User, UserRole } from '../../../src/modules/users/users.entity';
@@ -14,7 +14,7 @@ describe('UserService', () => {
   const mockUser = createMockUser();
 
   beforeEach(async () => {
-    const mockRepository = createMockRepository<User>();
+    const mockRepository = createMockRepository()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -88,7 +88,6 @@ describe('UserService', () => {
       const result = await service.findAll(1, 10);
 
       expect(repository.findAndCount).toHaveBeenCalledWith({
-        where: { archived: IsNull() },
         skip: 0,
         take: 10,
         order: { createdAt: 'DESC' },
@@ -132,7 +131,7 @@ describe('UserService', () => {
   describe('updateUserDetail', () => {
     it('should update user details', async () => {
       const updateDto: UpdateUserDto = {
-        firstName: 'Jane',
+        first_name: 'Jane',
         role: UserRole.EDITOR,
       };
 

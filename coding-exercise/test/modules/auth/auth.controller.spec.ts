@@ -64,7 +64,7 @@ describe('AuthController', () => {
       const expectedResult = { access_token: 'jwt-token' };
       authService.login.mockResolvedValue(expectedResult);
 
-      const result = controller.login(loginDto);
+      const result = await controller.login(loginDto);
 
       expect(authService.login).toHaveBeenCalledWith(loginDto);
       expect(result).toEqual(expectedResult);

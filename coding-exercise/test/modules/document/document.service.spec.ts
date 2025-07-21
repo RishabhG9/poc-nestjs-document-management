@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike, IsNull } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
 
 import { DocumentService } from '../../../src/modules/document/document.service';
@@ -15,7 +15,7 @@ describe('DocumentService', () => {
   const mockDocument = createMockDocument({ uploadedBy: mockUser });
 
   beforeEach(async () => {
-    const mockRepository = createMockRepository<Document>();
+    const mockRepository = createMockRepository();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
