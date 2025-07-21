@@ -120,11 +120,18 @@ docker run -p 3000:3000 nestjs-backend
 
 docker-compose up --build
 
-# Install dependencies
-yarn install
+```
+### Install dependencies
+```
+yarn install or npm i install
+```
 
-# Run in dev mode
-yarn start:dev
+### Run in dev mode
+```
+yarn start:dev or npm run start:dev
+```
 
-# Run tests
-yarn test
+### Run tests
+```
+yarn test or npm run test
+```
