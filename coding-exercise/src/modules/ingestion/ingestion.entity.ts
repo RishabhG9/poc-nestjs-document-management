@@ -43,11 +43,11 @@ export class Ingestion {
 
   @ApiProperty()
   @Column({ nullable: true })
-  errorMessage!: string;
+  errorMessage!: string | null;
 
   @ApiProperty()
   @Column({ nullable: true })
-  embeddingsGenerated!: number;
+  embeddingsGenerated!: number | null;
 
   @ApiProperty({ type: () => Document })
   @ManyToOne(() => Document, { eager: true })
