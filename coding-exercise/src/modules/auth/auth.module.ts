@@ -9,6 +9,9 @@ import { UserModule } from '../users/users.module';
 
 import { JwtStrategy } from './jwt.strategy';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 @Module({
   imports: [
     PassportModule,
