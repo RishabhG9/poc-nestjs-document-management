@@ -1,98 +1,132 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📚 NestJS Backend – User & Document Management
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the **NestJS-based backend service** that powers user authentication, document handling, and ingestion control APIs for a document-based RAG application. This service is containerized via Docker and supports API testing through Swagger.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+✅ This backend is now fully **Dockerized** and **deployed using Render.com (open-source free tier)**.
 
-## Description
+🔗 API base URL: [https://poc-nestjs-document-management.onrender.com/api](https://poc-nestjs-document-management.onrender.com/api)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+🌐 Live Swagger UI: [https://poc-nestjs-document-management.onrender.com/api/docs](https://poc-nestjs-document-management.onrender.com/api/docs)
 
-## Project setup
+---
+
+## 🚀 Project Overview
+
+This backend manages:
+
+- 🔐 **Authentication** (JWT + Roles)
+- 👥 **User Management** (Admin control over roles & permissions)
+- 📄 **Document Uploads** (with Cloudinary)
+- ⚙️ **Ingestion Process APIs** (simulated, no Python required)
+- 🧪 **Testing** with Jest
+- 🐳 **Dockerized** for deployment
+- 🔎 **Swagger UI** for API documentation
+- ☁️ **Live deployment via Render**
+
+---
+
+## ⚙️ Tech Stack & Tools
+
+| Feature                     | Description                                      |
+|----------------------------|--------------------------------------------------|
+| 🔧 Framework               | [NestJS](https://nestjs.com/)                    |
+| 💬 Language                | TypeScript                                       |
+| 🧱 Structure               | Scalable modular folders (DTOs, Entities)        |
+| 🛡 Auth                    | JWT + Role-based Guarding (`admin`, `editor`, `viewer`) |
+| 🧮 Database                | PostgreSQL (via **Supabase**)                   |
+| ☁️ File Storage           | Cloudinary (for document uploads)               |
+| 🐳 Containerization       | Dockerfile + `docker-compose.yml`               |
+| 🧪 Testing                 | Jest (unit tests included)                      |
+| 🔍 Docs                   | Swagger (auto-generated OpenAPI)                |
+
+---
+
+## 📁 Modules & API Endpoints
+
+### 🔐 Authentication
+
+| Method | Endpoint              | Description                |
+|--------|------------------------|----------------------------|
+| POST   | `/api/auth/register`   | Register a new user        |
+| POST   | `/api/auth/login`      | Login & get JWT token      |
+| POST   | `/api/auth/logout`     | Logout user                |
+
+---
+
+### 👥 Users (Admin Access Only)
+
+| Method | Endpoint             | Description                     |
+|--------|----------------------|---------------------------------|
+| GET    | `/api/users`         | List all users with pagination |
+| GET    | `/api/users/{id}`    | Get user by ID                 |
+| PATCH  | `/api/users/{id}`    | Update user info or role       |
+
+---
+
+### 📄 Documents
+
+| Method | Endpoint                    | Description                         |
+|--------|-----------------------------|-------------------------------------|
+| POST   | `/api/documents/upload`     | Upload document to Cloudinary      |
+| GET    | `/api/documents`            | List all documents (paginated)     |
+| PATCH  | `/api/documents/{id}`       | Update document filename           |
+| DELETE | `/api/documents/{id}`       | Delete document by ID              |
+
+---
+
+### ⚙️ Ingestion Process
+
+| Method | Endpoint                               | Description                           |
+|--------|----------------------------------------|---------------------------------------|
+| POST   | `/api/ingestion/trigger`               | Trigger ingestion (mocked)            |
+| GET    | `/api/ingestion`                       | List ingestion jobs (paginated)       |
+| GET    | `/api/ingestion/{id}`                  | Get ingestion job details             |
+| DELETE | `/api/ingestion/{id}`                  | Cancel ingestion (Admin only)         |
+| PATCH  | `/api/ingestion/{id}/status`           | Update ingestion status (Admin only)  |
+
+---
+
+## 🧪 Testing APIs via Swagger
+
+Swagger documentation is available at:
+
+👉 [https://poc-nestjs-document-management.onrender.com/api/docs](https://poc-nestjs-document-management.onrender.com/api/docs)
+
+Use the Swagger UI to explore, test, and debug all available API routes with proper request bodies and response structures.
+
+---
+
+## 💻 How to Run the Project
+
+### 🐳 Docker Setup
+
+To build and run the containerized NestJS app:
 
 ```bash
-$ yarn install
+# Build app first
+yarn build
+or
+npm run build
+
+# Build the container
+docker build --no-cache -t nestjs-backend .
+
+# Run the container
+docker run -p 3000:3000 --env-file .env nestjs-backend
+
+docker-compose up --build
 ```
 
-## Compile and run the project
-
+### 🔧 Run code locally
 ```bash
-# development
-$ yarn run start
+# Install dependencies
+yarn or npm i install
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+# Start dev server
+yarn start:dev or npm run start:dev
 ```
 
-## Run tests
-
+### Run Test locally
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn test or npm run test
 ```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

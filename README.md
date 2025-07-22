@@ -2,6 +2,12 @@
 
 This is the **NestJS-based backend service** that powers user authentication, document handling, and ingestion control APIs for a document-based RAG application. This service is containerized via Docker and supports API testing through Swagger.
 
+✅ This backend is now fully **Dockerized** and **deployed using Render.com (open-source free tier)**.
+
+🔗 API base URL: [https://poc-nestjs-document-management.onrender.com/api](https://poc-nestjs-document-management.onrender.com/api)
+
+🌐 Live Swagger UI: [https://poc-nestjs-document-management.onrender.com/api/docs](https://poc-nestjs-document-management.onrender.com/api/docs)
+
 ---
 
 ## 🚀 Project Overview
@@ -15,6 +21,7 @@ This backend manages:
 - 🧪 **Testing** with Jest
 - 🐳 **Dockerized** for deployment
 - 🔎 **Swagger UI** for API documentation
+- ☁️ **Live deployment via Render**
 
 ---
 
@@ -81,57 +88,45 @@ This backend manages:
 
 ## 🧪 Testing APIs via Swagger
 
-> Swagger documentation is available at:
+Swagger documentation is available at:
 
-
-http://localhost:3000/api
-
+👉 [https://poc-nestjs-document-management.onrender.com/api/docs](https://poc-nestjs-document-management.onrender.com/api/docs)
 
 Use the Swagger UI to explore, test, and debug all available API routes with proper request bodies and response structures.
 
 ---
 
-## 🧰 Third-Party Packages Used
+## 💻 How to Run the Project
 
-- `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`
-- `@nestjs/swagger`, `swagger-ui-express`
-- `typeorm` – ORM for PostgreSQL (via Supabase)
-- `multer`, `multer-storage-cloudinary` – File uploads
-- `cloudinary` – Cloud storage for documents
-- `dotenv` – Environment configuration
-- `express` – Underlying HTTP framework
-- `jest`, `ts-jest` – Unit testing
-- `prettier` – Code formatting
-- `docker`, `docker-compose`
-- `typescript`
-
----
-
-## 🐳 Docker Setup
+### 🐳 Docker Setup
 
 To build and run the containerized NestJS app:
 
 ```bash
+# Build app first
+yarn build
+or
+npm run build
+
 # Build the container
-docker build -t nestjs-backend .
+docker build --no-cache -t nestjs-backend .
 
 # Run the container
-docker run -p 3000:3000 nestjs-backend
+docker run -p 3000:3000 --env-file .env nestjs-backend
 
 docker-compose up --build
-
-```
-### Install dependencies
-```
-yarn install or npm i install
 ```
 
-### Run in dev mode
-```
+### 🔧 Run code locally
+```bash
+# Install dependencies
+yarn or npm i install
+
+# Start dev server
 yarn start:dev or npm run start:dev
 ```
 
-### Run tests
-```
+### Run Test locally
+```bash
 yarn test or npm run test
 ```
