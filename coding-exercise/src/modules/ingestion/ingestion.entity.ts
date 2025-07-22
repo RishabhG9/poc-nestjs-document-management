@@ -42,12 +42,12 @@ export class Ingestion {
   progress!: number; // 0-100
 
   @ApiProperty()
-  @Column({ nullable: true })
-  errorMessage!: string | null;
+  @Column('jsonb', { nullable: true })
+  errorMessage!: any | null;
 
   @ApiProperty()
-  @Column({ nullable: true })
-  embeddingsGenerated!: number | null;
+  @Column('jsonb', { nullable: true })
+  embeddingsGenerated!: any | null;
 
   @ApiProperty({ type: () => Document })
   @ManyToOne(() => Document, { eager: true })
